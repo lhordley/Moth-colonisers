@@ -11,7 +11,7 @@ library(dplyr)
 library(tidyverse)
 
 ## Group/time interaction
-cdata <- read.csv("Data/moth_coloniser_data_spp.csv", header=TRUE)
+cdata <- read.csv("Coloniser data/moth_coloniser_data_spp.csv", header=TRUE)
 
 cdata$mid_date <- factor(cdata$mid_date, levels=c("1905","1915","1925","1935","1945","1955","1965","1975","1985","1995","2005", "2015"))
 cdata$coloniser_mode <- factor(cdata$coloniser_mode, levels=c("A", "I"))
