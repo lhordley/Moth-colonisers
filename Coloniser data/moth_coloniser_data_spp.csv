@@ -1,143 +1,117 @@
-ID,scientific_name,mid_date,coloniser_mode,consensus,host_plant_status
-1,Acleris abietana,1965,A,N,Non-native
-2,Acrolepiopsis assectella,1945,I,N,Native
-3,Adoxophyes orana,1955,I,Y,Native
-4,Anarsia innoxiella,1995,I,N,Native
-5,Ancylosis oblitella ,1955,I,Y,Native
-6,Antispila treitschkiella,2015,A,Y,Non-native
-7,Aplasta ononaria,1935,I,Y,Native
-9,Argolamprotes micella,1965,I,N,Native
-10,Argyresthia cupressella,1995,A,Y,Native
-11,Argyresthia trifasciata,1995,A,Y,Native
-12,Athrips rancidella,1975,A,Y,Non-native
-13,Barea asbolaea,2005,A,Y,Non-native
-14,Bisigna procerella,1975,I,Y,Native
-15,Blastobasis decolorella,1945,A,Y,Native
-16,Blastobasis lignea,1915,A,Y,Native
-18,Blastobasis rebeli,1995,A,Y,NA
-19,Blastobasis vittata,2005,A,Y,NA
-20,Bucculatrix ulmifoliae,2005,A,Y,Non-native
-21,Cacoecimorpha pronubana ,1905,I,N,Native
-22,Calophasia lunula,1955,I,Y,Native
-23,Caloptilia azaleella,1935,A,Y,Non-native
-24,Caloptilla rufipennella,1975,I,Y,Non-native
-25,Cameraria ohridella,2005,A,N,Non-native
-27,Catocala electa,2015,I,Y,Native
-28,Catocala fraxini,2005,I,Y,Native
-29,Catoptria verellus,2015,I,Y,Native
-30,Choreutis nemorana,2015,A,Y,Non-native
-31,Clavigesta purdeyi,1915,I,Y,Non-native
-32,Clepsis dumicolana,2015,A,Y,Native
-33,Clostera anachoreta,1975,I,Y,Native
-34,Cochylis molliculana ,1995,I,Y,Native
-35,Coleophora aestuariella ,1985,I,N,Native
-36,Coleophora calycotomella,2005,I,N,Native
-37,Coleophora fusicornis ,1975,I,N,Native
-38,Coleophora linosyridella,1975,I,N,Native
-39,Coleotechnites piceaella,1955,A,Y,Non-native
-40,Conistra rubiginosa ,2015,I,Y,Native
-41,Cosmopterix pulchrimella,2005,I,Y,Native
-42,Croidosema plebejana,1905,I,N,Native
-43,Cryphia algae,2005,I,Y,Native
-44,Cyclophora puppillaria,2005,I,Y,Non-native
-45,Cyclophora ruficiliaria,2005,I,Y,Native
-46,Cydalima perspectalis,2005,A,Y,Native
-47,Cydia conicolona,1935,I,N,Non-native
-48,Cydia illutana,1975,I,Y,Non-native
-49,Cydia inquinatana,2015,I,Y,Native
-50,Cydia interscindana,2015,A,Y,Non-native
-51,Cydia medicaginis ,1975,I,Y,Native
-52,Cydia milleniana ,1945,I,N,Non-native
-53,Cydia pactolana,1965,A,Y,Non-native
-55,Dioryctria schuetzeella,1985,I,Y,Non-native
-56,Dioryctria sylvestrella ,1995,I,Y,Non-native
-57,Drepana curvatula,2015,I,Y,Native
-58,Dryobota labecula,1995,I,Y,Non-native
-59,Dryobotodes tenebrosa,2005,I,Y,Non-native
-60,Ectoedemia decentella ,1935,I,Y,Non-native
-61,Ectoedemia erythrogenella ,1975,I,Y,Native
-62,Ectoedemia hannoverella,2005,A,N,Non-native
-63,Ectoedemia heringella,1995,A,Y,Non-native
-64,Ectoedemia sericopeza,1975,A,N,Non-native
-65,Ectoedemia turbidella ,1945,I,Y,Non-native
-66,Emmetia heinemanni,1985,I,Y,Native
-67,Epiphyas postvittana,1935,A,Y,Native
-68,Ethmia terminella,1935,I,Y,Native
-69,Eucosma metzneriana,1995,I,Y,Native
-70,Eupithecia millefoliata,1935,I,Y,Native
-71,Eupithecia phoeniceata ,1955,I,Y,Non-native
-72,Eupithecia ultimaria,1995,I,Y,Non-native
-73,Evergestis limbata,1995,I,Y,Native
-74,Gelechia senticetella,1985,A,N,Native
-75,Grapholita lobarzewskii,1925,I,Y,Native
-76,Gravitarmata margarotana,2015,I,Y,Non-native
-77,Hadena compta,1945,I,Y,Non-native
-78,Haimbachia cicatricella,1995,I,Y,Native
-79,Hectera dysodea,1995,I,Y,Native
-80,Herminia tarsicrinalis ,1965,I,Y,Native
-81,Hydraecia ossola,1955,I,Y,Native
-82,Hyles gallii,1985,I,Y,Native
-83,Hypena obsitalis,1995,I,Y,Native
-84,Laconobia splendens,2015,I,Y,Native
-85,Lampronia flavimitrella,1975,I,N,Native
-86,Lithophane leautieri,1955,I,Y,Non-native
-87,Lozotaeniodes formosanus,1945,I,Y,Non-native
-88,Lymantria dispar,1995,A,Y,Native
-89,Lyonetia prunifoliella,2015,I,Y,Native
-90,Macaria signaria,2005,I,Y,Non-native
-91,Macdunnoughia confusa,2005,I,Y,Native
-92,Metalampra italica,2005,A,Y,Native
-93,Minucia lunaris,1955,I,Y,Native
-94,Monochora niphognatha ,1985,I,N,Native
-95,Monochroa hornigi,1965,A,N,Native
-96,Monochroa moyses,1975,I,N,Native
-97,Musotima nitidalis,2005,A,Y,Native
-98,Mythimna albipuncta,1985,I,Y,Native
-99,Mythimna l-album,1935,I,Y,Native
-100,Mythimna unipuncta,2005,I,Y,Native
-101,Noctua janthina,2005,I,Y,Native
-102,Oegoconia novimundi,2015,A,N,Native
-103,Opogona omoscopa,2005,A,Y,Non-native
-104,Ostrinia nubilalis,1935,I,Y,Native
-105,Pachyrhabda steropodes,2005,A,Y,Native
-106,Pammene aurita,1945,I,Y,Non-native
-107,Pammene ignorata,2005,I,N,Native
-108,Parornix atripalpella,2015,I,Y,Native
-109,Pechipogo plumigeralis,2005,I,Y,Native
-110,Pennisetia hylaeiformis,2005,A,N,Native
-111,Peribatodes secundaria,1985,I,Y,Non-native
-112,Phlyctaenia perlucidalis,1955,I,N,Native
-113,Phyllocnistis ramulicola,2005,I,N,Native
-114,Phyllocnistis xenia,1975,I,Y,Non-native
-115,Phyllomorcyter leucographella,1985,A,Y,Non-native
-116,Phyllomorcyter platani,1995,A,N,Non-native
-117,Phyllonorycter geniculella,1925,A,N,Non-native
-118,Phyllonorycter medicaginella,2015,I,Y,Non-native
-119,Phyllonorycter pastorella,2015,A,N,Native
-120,Phyllonorycter platanoidella,1965,A,N,Non-native
-121,Phyllonorycter strigulatella,1925,A,N,Non-native
-122,Platyperigea kadenii,2005,I,Y,Native
-123,Prays peregrina ,2005,A,Y,Native
-124,Pseudocoremia suavis,2005,A,Y,Non-native
-125,Psychoides filicivora,1945,A,Y,Native
-126,Ptycholomoides aeriferana,1955,I,Y,Non-native
-127,Sciota adelphella,1995,I,Y,Native
-128,Sclerocona acutellus,2015,I,N,Native
-129,Sedina buettneri,1995,I,Y,Native
-130,Spargania luctuata,1955,I,Y,Native
-131,Stegania cararia,2015,I,Y,Native
-132,Stenoptilla millieridactyla,1965,A,N,Native
-133,Stigmella speciosa,1955,I,Y,Non-native
-134,Stigmella zelleriella,1955,I,N,Native
-135,Stigmella suberivora ,1925,I,N,Non-native
-136,Tachystola acroxantha,1905,A,Y,Native
-137,Thalera fimbrialis,1955,I,Y,Native
-138,Thaumetopoea processionea,2005,A,Y,Native
-139,Thera cupressata,1985,I,Y,Non-native
-140,Tinagma balteolella,1975,I,Y,Native
-141,Trachypepla contritella,2015,A,Y,NA
-142,Trigonophora flammea,2015,I,Y,Native
-143,Udea fulvalis ,1925,I,Y,Native
-144,Vitula biviella,1995,I,Y,Non-native
-145,Vitula serratilineella,2015,I,N,Native
-146,Xanthorhoe biriviata,1955,A,N,Non-native
+ID,scientific_name,mid_date,coloniser_mode,host_plant_status,micro_macro
+1,Acleris abietana,1965,A,Non-native,micro
+3,Adoxophyes orana,1955,I,Native,micro
+4,Anarsia innoxiella,1995,I,Native,micro
+5,Ancylosis oblitella ,1955,I,Native,micro
+6,Antispila treitschkiella,2015,A,Non-native,micro
+7,Aplasta ononaria,1935,I,Native,macro
+9,Argolamprotes micella,1965,I,Native,micro
+10,Argyresthia cupressella,1995,A,Native,micro
+11,Argyresthia trifasciata,1995,A,Native,micro
+12,Athrips rancidella,1975,A,Non-native,micro
+13,Barea asbolaea,2005,A,Non-native,micro
+14,Bisigna procerella,1975,I,Native,micro
+15,Blastobasis decolorella,1945,A,Native,micro
+16,Blastobasis lignea,1915,A,Native,micro
+18,Blastobasis rebeli,1995,A,NA,micro
+19,Blastobasis vittata,2005,A,NA,micro
+20,Bucculatrix ulmifoliae,2005,A,Non-native,micro
+22,Calophasia lunula,1955,I,Native,macro
+23,Caloptilia azaleella,1935,A,Non-native,micro
+27,Catocala electa,2015,I,Native,macro
+28,Catocala fraxini,2005,I,Native,macro
+29,Catoptria verellus,2015,I,Native,micro
+30,Choreutis nemorana,2015,A,Non-native,micro
+31,Clavigesta purdeyi,1915,I,Non-native,micro
+32,Clepsis dumicolana,2015,A,Native,micro
+33,Clostera anachoreta,1975,I,Native,macro
+34,Cochylis molliculana ,1995,I,Native,micro
+37,Coleophora amethystinella ,1975,I,Native,micro
+39,Coleotechnites piceaella,1955,A,Non-native,micro
+40,Conistra rubiginosa ,2015,I,Native,macro
+41,Cosmopterix pulchrimella,2005,I,Native,micro
+43,Cryphia algae,2005,I,Native,macro
+44,Cyclophora puppillaria,2005,I,Non-native,macro
+45,Cyclophora ruficiliaria,2005,I,Native,macro
+46,Cydalima perspectalis,2005,A,Native,micro
+48,Cydia illutana,1975,I,Non-native,micro
+49,Cydia inquinatana,2015,I,Native,micro
+50,Cydia interscindana,2015,A,Non-native,micro
+51,Cydia medicaginis ,1975,I,Native,micro
+52,Cydia milleniana ,1945,A,Non-native,micro
+55,Dioryctria schuetzeella,1985,I,Non-native,micro
+56,Dioryctria sylvestrella ,1995,I,Non-native,micro
+57,Drepana curvatula,2015,I,Native,macro
+58,Dryobota labecula,1995,I,Non-native,macro
+59,Dryobotodes tenebrosa,2005,I,Non-native,macro
+60,Ectoedemia decentella ,1935,I,Non-native,micro
+61,Ectoedemia erythrogenella ,1975,I,Native,micro
+63,Ectoedemia heringella,1995,A,Non-native,micro
+65,Ectoedemia turbidella ,1945,I,Non-native,micro
+66,Emmetia heinemanni,1985,I,Native,micro
+67,Epiphyas postvittana,1935,A,Native,micro
+68,Ethmia terminella,1935,I,Native,micro
+69,Eucosma metzneriana,1995,I,Native,micro
+70,Eupithecia millefoliata,1935,I,Native,macro
+71,Eupithecia phoeniceata ,1955,I,Non-native,macro
+72,Eupithecia ultimaria,1995,I,Non-native,macro
+73,Evergestis limbata,1995,I,Native,micro
+74,Gelechia senticetella,1985,A,Native,micro
+75,Grapholita lobarzewskii,1925,I,Native,micro
+76,Gravitarmata margarotana,2015,I,Non-native,micro
+77,Hadena compta,1945,I,Non-native,macro
+78,Haimbachia cicatricella,1995,I,Native,micro
+79,Hectera dysodea,1995,I,Native,macro
+80,Herminia tarsicrinalis ,1965,I,Native,macro
+81,Hydraecia ossola,1955,I,Native,macro
+82,Hyles gallii,1985,I,Native,macro
+83,Hypena obsitalis,1995,I,Native,macro
+84,Laconobia splendens,2015,I,Native,macro
+86,Lithophane leautieri,1955,I,Non-native,macro
+87,Lozotaeniodes formosanus,1945,I,Non-native,micro
+88,Lymantria dispar,1995,A,Native,macro
+89,Lyonetia prunifoliella,2015,I,Native,micro
+90,Macaria signaria,2005,I,Non-native,macro
+91,Macdunnoughia confusa,2005,I,Native,macro
+92,Metalampra italica,2005,A,Native,micro
+93,Minucia lunaris,1955,I,Native,micro
+97,Musotima nitidalis,2005,A,Native,micro
+98,Mythimna albipuncta,1985,I,Native,macro
+99,Mythimna l-album,1935,I,Native,macro
+100,Mythimna unipuncta,2005,I,Native,macro
+101,Noctua janthina,2005,I,Native,macro
+103,Opogona omoscopa,2005,A,Non-native,micro
+104,Ostrinia nubilalis,1935,I,Native,micro
+105,Pachyrhabda steropodes,2005,A,Native,micro
+106,Pammene aurita,1945,I,Non-native,micro
+108,Parornix atripalpella,2015,I,Native,micro
+109,Pechipogo plumigeralis,2005,I,Native,macro
+110,Pennisetia hylaeiformis,2005,A,Native,macro
+111,Peribatodes secundaria,1985,I,Non-native,macro
+112,Phlyctaenia perlucidalis,1955,I,Native,micro
+114,Phyllocnistis xenia,1975,I,Non-native,micro
+115,Phyllomorcyter leucographella,1985,A,Non-native,micro
+116,Phyllomorcyter platani,1995,A,Non-native,micro
+118,Phyllonorycter medicaginella,2015,I,Non-native,micro
+121,Phyllonorycter strigulatella,1925,A,Non-native,micro
+122,Platyperigea kadenii,2005,I,Native,micro
+123,Prays peregrina ,2005,A,Native,micro
+124,Pseudocoremia suavis,2005,A,Non-native,macro
+125,Psychoides filicivora,1945,A,Native,micro
+126,Ptycholomoides aeriferana,1955,I,Non-native,micro
+127,Sciota adelphella,1995,I,Native,micro
+128,Sclerocona acutellus,2015,A,Native,micro
+129,Sedina buettneri,1995,I,Native,macro
+130,Spargania luctuata,1955,I,Native,macro
+131,Stegania cararia,2015,I,Native,macro
+132,Stenoptilla millieridactyla,1965,A,Native,micro
+133,Stigmella speciosa,1955,I,Non-native,micro
+136,Tachystola acroxantha,1905,A,Native,micro
+137,Thalera fimbrialis,1955,I,Native,macro
+138,Thaumetopoea processionea,2005,A,Native,macro
+139,Thera cupressata,1985,I,Non-native,macro
+140,Tinagma balteolella,1975,I,Native,micro
+141,Trachypepla contritella,2015,A,NA,micro
+142,Trigonophora flammea,2015,I,Native,macro
+143,Udea fulvalis ,1925,I,Native,micro
+144,Vitula biviella,1995,I,Non-native,micro
