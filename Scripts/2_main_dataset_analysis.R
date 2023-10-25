@@ -64,9 +64,11 @@ all_spp_p <- ggplot(pred, aes(x=mid_date, y=predicted))+
   scale_x_continuous(breaks=seq(1905,2015,by=20))+
   labs(x="Year", y="Number of species")+
   scale_y_continuous(breaks=seq(0,30,by=5))+
-  theme_classic()
+  theme_classic()+
+  theme(text = element_text(size=16), legend.title=element_text(size=16), 
+        legend.text=element_text(size=16))
 all_spp_p
-ggsave(all_spp_p, file="Graphs/Figure1.png")
+ggsave(all_spp_p, file="Graphs/Figure1.png", height=5, width=5)
 
 # What is the incidence rate over time?
 output <- coef(summary(all_spp_m))
@@ -82,7 +84,7 @@ setDT(all_spp_r)
 all_spp_r[, rate_lower := rate - 1.96*rate_SE]
 all_spp_r[, rate_upper := rate + 1.96*rate_SE]
 all_spp_r
-# ~19% significant increase in the number of species colonising per decade on average
+# ~22% significant increase in the number of species colonising per decade on average
 
 #
 
@@ -93,10 +95,7 @@ summary(imm_spp_m)
 
 # Check model fit
 simulationOutput <- simulateResiduals(fittedModel = imm_spp_m)
-plot(simulationOutput) # quantile deviations
-plotResiduals(simulationOutput, cdata$date_num, quantreg = T) 
-res = recalculateResiduals(simulationOutput, group = cdata$date_num) # recalculate residuals to aggregate residuals per time step
-testTemporalAutocorrelation(res, time = unique(cdata$date_num)) # non-sig
+plot(simulationOutput) 
 testDispersion(simulationOutput)
 # no assumptions violated
 
@@ -104,16 +103,54 @@ testDispersion(simulationOutput)
 imm_spp_seg <- segmented(imm_spp_m,
                          seg.Z = ~date_num)
 
-summary(imm_spp_seg) # break is at 4 (i.e. 1935)
+summary(imm_spp_seg) # break is at 3.6 (i.e. ~1935)
 # Davies' test - tests for the hypothesis that leftSlope=Rightslop (no difference in the two slopes - breakpoint does not exist)
-davies.test(imm_spp_m, seg.Z= ~date_num) # non-significant - accept null that breakpoint does not exist
+davies.test(imm_spp_m, seg.Z= ~date_num) # significant - breakpoint does exist
 slope(imm_spp_seg)
 
 # Compare to model with no break
 BIC(imm_spp_m) 
 BIC(imm_spp_seg) 
-# within 2 points
-# take the simplest model - non-segmented
+# segmented model has lowest BIC by 2.4
+
+#### NEED TO PLOT SEGMENTED MODEL HERE #####
+newdataesw <- expand.grid(date_num = c(1,2,3,4,5,6,7,8,9,10,11,12), nspp = 0)
+dat <- predict(imm_spp_seg, newdata = newdataesw, type="response", se.fit=TRUE)
+dat <- as.data.frame(dat)
+dat$mid_date <- c(1905,1915,1925,1935,1945,1955,1965,1975,1985,1995,2005,2015)
+dat$signif <- ifelse(dat$mid_date<1935, "no", "yes")
+setDT(dat)
+dat[, rate_lower := fit - 1.96*se.fit]
+dat[, rate_upper := fit + 1.96*se.fit]
+
+imm_spp_seg_p <- ggplot(dat, aes(x=mid_date, y=fit))+
+  geom_line(aes(linetype=signif),show.legend=FALSE)+
+  geom_ribbon(aes(ymin=rate_lower, ymax=rate_upper, group=signif), alpha=0.1)+
+  geom_point(data=cdata, aes(x=mid_date, y=imm_nspp))+
+  scale_x_continuous(breaks=seq(1905,2015,by=20))+
+  labs(x="Year", y="Number of species")+
+  scale_linetype_manual(values=c("dashed", "solid"))+
+  theme_classic()
+imm_spp_seg_p 
+
+# What is the incidence rate over time? 
+output <- slope(imm_spp_seg)$date_num
+imm_spp_r1 <- data.frame(Startdate = 1905, Enddate=2015, # start date of model
+                        rate = exp(output["slope2","Est."]), # exponential of the adventive slope
+                        rate_SE = 
+                          deltamethod(~exp(x1), 
+                                      output["slope2","Est."], 
+                                      output["slope2","St.Err."]^2, ses=TRUE)) # standard error around exponential of immigrant slope
+
+# Produce confidence intervals for the rate estimates
+setDT(imm_spp_r1)
+imm_spp_r1[, rate_lower := rate - 1.96*rate_SE]
+imm_spp_r1[, rate_upper := rate + 1.96*rate_SE]
+imm_spp_r1
+# doesn't work - gives really odd value for slope1 - probably because estimate is only based on 3 values
+
+
+
 
 # Plot trend over time with raw data
 pred <- ggpredict(imm_spp_m, terms="date_num")
@@ -121,11 +158,11 @@ pred$mid_date <- cdata$mid_date
 
 imm_spp_p <- ggplot(pred, aes(x=mid_date, y=predicted))+
   geom_line()+
-  geom_ribbon(aes(ymin=conf.low, ymax=conf.high), alpha=0.1)+
+  #geom_ribbon(aes(ymin=conf.low, ymax=conf.high), alpha=0.1)+
   geom_point(data=cdata, aes(x=mid_date, y=imm_nspp))+
   scale_x_continuous(breaks=seq(1905,2015,by=20))+
   labs(x="Year", y="Number of species")+
-  scale_y_continuous(breaks=seq(0,30,by=5), limits=c(0,30))+
+  #scale_y_continuous(breaks=seq(0,30,by=5), limits=c(0,30))+
   theme_classic()
 imm_spp_p
 
@@ -203,7 +240,7 @@ setDT(adv_spp_r)
 adv_spp_r[, rate_lower := rate - 1.96*rate_SE]
 adv_spp_r[, rate_upper := rate + 1.96*rate_SE]
 adv_spp_r
-# ~25% significant increase in the number of species colonising per decade on average
+# ~26% significant increase in the number of species colonising per decade on average
 
 #
 
@@ -221,6 +258,7 @@ testDispersion(simulationOutput)
 # Segmented GLM
 imm_nat_spp_seg <- segmented(imm_nat_spp_m,
                              seg.Z = ~date_num)
+# warning message: fitted rates numerically 0 occurred
 
 summary(imm_nat_spp_seg) # break is at 4 (i.e. ~1935)
 # Davies' test - tests for the hypothesis that leftSlope=Rightslop (no difference in the two slopes - breakpoint does not exist)
@@ -266,14 +304,13 @@ imm_nat_spp_r
 ### 1e. Immigrant + non-native host plants
 # Poisson GLM
 imm_nn_spp_m <- glm(imm_nn_nspp ~ date_num, data=cdata, family="poisson")
-summary(imm_nn_spp_m) # date is non-significant
+summary(imm_nn_spp_m) # date is significant (just)
 
 # Check model fit
 simulationOutput <- simulateResiduals(fittedModel = imm_nn_spp_m)
 plot(simulationOutput) 
-res = recalculateResiduals(simulationOutput, group = cdata$date_num) # recalculate residuals to aggregate residuals per time step
-testTemporalAutocorrelation(res, time = unique(cdata$date_num)) # non-sig
 testDispersion(simulationOutput)
+# no assumptions violated
 
 # Segmented GLM
 imm_nn_spp_seg <- segmented(imm_nn_spp_m,
@@ -290,12 +327,12 @@ BIC(imm_nn_spp_seg)
 
 # Plot trend over time with raw data - dashed line and no error bars to show non-significance
 pred <- ggpredict(imm_nn_spp_m, terms="date_num")
-pred$mid_date <- imm_nn_spp$mid_date
+pred$mid_date <- cdata$mid_date
 
 imm_nn_spp_p <- ggplot(pred, aes(x=mid_date, y=predicted))+
-  geom_line(linetype=2)+
-  #geom_ribbon(aes(ymin=conf.low, ymax=conf.high), alpha=0.1)+
-  geom_point(data=imm_nn_spp, aes(x=mid_date, y=nspp))+
+  geom_line()+
+  geom_ribbon(aes(ymin=conf.low, ymax=conf.high), alpha=0.1)+
+  geom_point(data=cdata, aes(x=mid_date, y=imm_nn_nspp))+
   scale_x_continuous(breaks=seq(1905,2015,by=20))+
   labs(x="Year", y="Number of species")+
   theme_classic()
@@ -345,12 +382,12 @@ BIC(adv_nat_spp_seg)
 
 # Plot trend over time with raw data
 pred <- ggpredict(adv_nat_spp_m, terms="date_num")
-pred$mid_date <- adv_nat_spp$mid_date
+pred$mid_date <- cdata$mid_date
 
 adv_nat_spp_p <- ggplot(pred, aes(x=mid_date, y=predicted))+
   geom_line()+
   geom_ribbon(aes(ymin=conf.low, ymax=conf.high), alpha=0.1)+
-  geom_point(data=adv_nat_spp, aes(x=mid_date, y=nspp))+
+  geom_point(data=cdata, aes(x=mid_date, y=adv_nat_nspp))+
   scale_x_continuous(breaks=seq(1905,2015,by=20))+
   labs(x="Year", y="Number of species")+
   theme_classic()
@@ -376,21 +413,30 @@ adv_nat_spp_r
 
 ### 1g. Adventive + non-native host plants
 # Poisson GLM
-adv_nn_spp_m <- glm(adv_nn_nspp ~ date_num, family="poisson", data=cdata)
+library(performance)
+library(glmmTMB)
+
+adv_nn_spp_m <- glmmTMB(adv_nn_nspp ~ date_num, family="compois", data=cdata)
 summary(adv_nn_spp_m) # date is significant
 
+COMPoissonReg::nu(adv_nn_spp_m)
+check_overdispersion(adv_nn_spp_m)
 # Check model fit
 simulationOutput <- simulateResiduals(fittedModel = adv_nn_spp_m)
 plot(simulationOutput)
 testDispersion(simulationOutput)
+# underdispersion - try genpois
+dispersiontest(adv_nn_spp_m2)
 
 # Segmented GLM
-adv_nn_spp_seg <- segmented(adv_nn_spp_m,
+adv_nn_spp_m2 <- glm(adv_nn_nspp ~ date_num, family="poisson", data=cdata)
+adv_nn_spp_seg <- segmented(adv_nn_spp_m2,
                             seg.Z = ~date_num)
 
 summary(adv_nn_spp_seg) # coefficients are far too high - segmented model is struggling with too many zeros
 # just stick with non-segmented model
 BIC(adv_nn_spp_m) 
+BIC(adv_nn_spp_seg) 
 
 # Plot trend over time with raw data
 pred <- ggpredict(adv_nn_spp_m, terms="date_num")
@@ -408,11 +454,11 @@ adv_nn_spp_p
 # What is the incidence rate over time?
 output <- coef(summary(adv_nn_spp_m))
 adv_nn_spp_r <- data.frame(Startdate = 1905, Enddate=2015, # start date of model
-                           rate = exp(output["date_num","Estimate"]), # exponential of the adventive slope
+                           rate = exp(output$cond["date_num","Estimate"]), # exponential of the adventive slope
                            rate_SE = 
                              deltamethod(~exp(x1), 
-                                         output["date_num","Estimate"], 
-                                         output["date_num","Std. Error"]^2, ses=TRUE)) # standard error around exponential of immigrant slope
+                                         output$cond["date_num","Estimate"], 
+                                         output$cond["date_num","Std. Error"]^2, ses=TRUE)) # standard error around exponential of immigrant slope
 
 # Produce confidence intervals for the rate estimates
 setDT(adv_nn_spp_r)
@@ -428,18 +474,23 @@ adv_nn_spp_r
 
 ## Plot all 3 immigrant trends (all immigrants, immigrants + native and immigrants + non-native) 
 
-pred1 <- ggpredict(imm_spp_m, terms="date_num")
+pred1 <- dat
 pred2 <- ggpredict(imm_nat_spp_m, terms="date_num")
 pred3 <- ggpredict(imm_nn_spp_m, terms="date_num")
 
 pred1$group <- "immigrant"
-pred1$significance <- "significant"
-pred1$mid_date <- cdata$mid_date
+pred1$significance <- pred1$signif
+pred1$x <- c(1:nrow(pred1))
+pred1$residual.scale <- NULL
+pred1$signif <- NULL
+colnames(pred1)[1:5] <- c("predicted", "std.error", "mid_date", "conf.low", "conf.high")
+pred1 <- pred1[,c(8,1:7)]
+
 pred2$group <- "immigrant_native"
-pred2$significance <- "significant"
+pred2$significance <- "yes"
 pred2$mid_date <- cdata$mid_date
 pred3$group <- "immigrant_nonnative"
-pred3$significance <- "non-significant"
+pred3$significance <- "yes"
 pred3$mid_date <- cdata$mid_date
 
 imm <- cdata[,c(1,3,5:6)]
@@ -452,25 +503,25 @@ imm2$group[imm2$group == "imm_nn_nspp"] <- "immigrant_nonnative"
 
 
 pred_final <- rbind(pred1, pred2, pred3)
-pred_final <- merge(pred_final, imm2, by=c("group", "mid_date"))
+#pred_final <- merge(pred_final, imm2, by=c("group", "mid_date"))
 legend_title <- ""
-pred_final$significance <- factor(pred_final$significance, levels=c("significant", "non-significant"))
-imm_final <- ggplot(data=pred_final)+
-  geom_line(aes(x=mid_date, y=predicted, colour=group, linetype=significance), lwd=2)+
-  geom_ribbon(aes(x=mid_date, y=predicted, ymin=conf.low, ymax=conf.high, fill=group), alpha=0.2)+
-  geom_point(aes(x=mid_date, y=value, colour=group, shape=group), size=3)+
-  scale_fill_manual(legend_title,labels=c("Immigrants","Immigrants on native \nhost plants", "Immigrants on non-native \nhost plants"),
+pred_final$significance <- factor(pred_final$significance, levels=c("yes", "no"))
+imm_final <- ggplot()+
+  geom_line(data=pred_final, aes(x=mid_date, y=predicted, colour=group, linetype=significance), lwd=2)+
+  geom_ribbon(data=pred_final, aes(x=mid_date, y=predicted, ymin=conf.low, ymax=conf.high, fill=group, fill=significance), alpha=0.2)+
+  geom_point(data=imm2, aes(x=mid_date, y=value, colour=group, shape=group), size=3, alpha=0.4)+
+  scale_fill_manual(legend_title,labels=c("Immigrants","Immigrants on native \nhost plants", "Immigrants on \nnon-native host \nplants"),
                     values = c("#1B9E77", "#D95F02", "#7570B3"))+
-  scale_colour_manual(legend_title,labels=c("Immigrants","Immigrants on native \nhost plants", "Immigrants on non-native \nhost plants"),
+  scale_colour_manual(legend_title,labels=c("Immigrants","Immigrants on native \nhost plants", "Immigrants on \nnon-native host \nplants"),
                       values = c("#1B9E77", "#D95F02", "#7570B3"))+
-  scale_shape_manual(legend_title,labels=c("Immigrants","Immigrants on native \nhost plants", "Immigrants on non-native \nhost plants"),
+  scale_shape_manual(legend_title,labels=c("Immigrants","Immigrants on native \nhost plants", "Immigrants on \nnon-native host \nplants"),
                      values = c(19,17,15))+
   guides(linetype = "none", fill = guide_legend(byrow = TRUE))+
   scale_x_continuous(breaks=seq(1905,2015,by=20))+
-  scale_y_continuous(breaks=seq(0,30,by=5), limits=c(0,25))+
+  #scale_y_continuous(breaks=seq(0,20,by=5), limits=c(0,20))+
   labs(x="Year", y="Number of species")+
   theme_classic()+
-  theme(legend.position = "bottom", text=element_text(size=24))
+  theme(legend.position = "bottom", text=element_text(size=30))
 imm_final
 
 
@@ -498,19 +549,19 @@ pred_final2 <- merge(pred_final2, adv2, by=c("group", "mid_date"))
 adv_final <- ggplot(pred_final2)+
   geom_line(aes(x=mid_date, y=predicted, colour=group), lwd=2)+
   geom_ribbon(aes(x=mid_date, y=predicted, ymin=conf.low, ymax=conf.high, fill=group), alpha=0.2)+
-  geom_point(aes(x=mid_date, y=value, colour=group, shape=group), size=3)+
-  scale_fill_manual(legend_title,labels=c("Adventives","Adventives on native \nhost plants", "Adventives on non-native \nhost plants"),
+  geom_point(aes(x=mid_date, y=value, colour=group, shape=group), size=3, alpha=0.4)+
+  scale_fill_manual(legend_title,labels=c("Adventives","Adventives on native \nhost plants", "Adventives on \nnon-native host \nplants"),
                     values = c("#1B9E77", "#D95F02", "#7570B3"))+
-  scale_colour_manual(legend_title,labels=c("Adventives","Adventives on native \nhost plants", "Adventives on non-native \nhost plants"),
+  scale_colour_manual(legend_title,labels=c("Adventives","Adventives on native \nhost plants", "Adventives on \nnon-native host \nplants"),
                       values = c("#1B9E77", "#D95F02", "#7570B3"))+
-  scale_shape_manual(legend_title,labels=c("Adventives","Adventives on native \nhost plants", "Adventives on non-native \nhost plants"),
+  scale_shape_manual(legend_title,labels=c("Adventives","Adventives on native \nhost plants", "Adventives on \nnon-native host \nplants"),
                      values = c(19,17,15))+
   scale_x_continuous(breaks=seq(1905,2015,by=20))+
-  scale_y_continuous(breaks=seq(0,30,by=5), limits=c(0,25))+
+  #scale_y_continuous(breaks=seq(0,30,by=5), limits=c(0,25))+
   labs(x="Year", y="Number of species")+
   guides(fill = guide_legend(byrow = TRUE))+
   theme_classic()+
-  theme(legend.position = "bottom", text=element_text(size=24))
+  theme(legend.position = "bottom", text=element_text(size=30))
 adv_final
 
 # Put all plots together
@@ -518,18 +569,30 @@ library(ggpubr)
 final <- ggarrange(imm_final, adv_final, 
                    labels = c("(a)", "(b)"),
                    ncol = 2, nrow = 1, font.label=list(color="black",size=24))
+final
 ggsave("Graphs/Figure2.png", final, width = 20, height = 10, units = "in")
 
 # put adventives and immigrants on one plot for supplementary material
-imm <- pred_final[pred_final$group=="immigrant",]
-imm$significance <- NULL
-adv <- pred_final2[pred_final2$group=="adventive",]
-pred_final3 <- rbind(imm, adv)
+imm <- ggpredict(imm_spp_m, terms="date_num")
+adv <- ggpredict(adv_spp_m, terms="date_num")
+imm$group <- "immigrant"
+adv$group <- "adventive"
+imm$mid_date <- c(1905,1915,1925,1935,1945,1955,1965,1975,1985,1995,2005,2015)
+adv$mid_date <- c(1905,1915,1925,1935,1945,1955,1965,1975,1985,1995,2005,2015)
+pred_final <- rbind(imm,adv)
 
-imm_adv <- ggplot(data=pred_final3)+
-  geom_line(aes(x=mid_date, y=predicted, colour=group), lwd=1)+
-  geom_ribbon(aes(x=mid_date, y=predicted, ymin=conf.low, ymax=conf.high, fill=group), alpha=0.2)+
-  geom_point(aes(x=mid_date, y=value, colour=group, shape=group), size=2)+
+points <- cdata[,c(1,3,4)]
+library(data.table)
+points2 <- melt(setDT(points), id.vars = "mid_date", variable.name = "group")
+points2$group <- as.character(points2$group)
+points2$group[points2$group == "imm_nspp"] <- "immigrant"
+points2$group[points2$group == "adv_nspp"] <- "adventive"
+legend_title <- ""
+
+imm_adv <- ggplot()+
+  geom_line(data=pred_final, aes(x=mid_date, y=predicted, colour=group), lwd=1)+
+  geom_ribbon(data=pred_final, aes(x=mid_date, y=predicted, ymin=conf.low, ymax=conf.high, fill=group), alpha=0.2)+
+  geom_point(data=points2, aes(x=mid_date, y=value, colour=group, shape=group), size=2)+
   scale_fill_manual(legend_title,labels=c("Adventives","Immigrants"),
                     values = c("#1B9E77", "#7570B3"))+
   scale_colour_manual(legend_title,labels=c("Adventives","Immigrants"),
@@ -538,7 +601,7 @@ imm_adv <- ggplot(data=pred_final3)+
                      values = c(19,15))+
   guides(linetype = "none", fill = guide_legend(byrow = TRUE))+
   scale_x_continuous(breaks=seq(1905,2015,by=20))+
-  scale_y_continuous(breaks=seq(0,30,by=5), limits=c(0,25))+
+  #scale_y_continuous(breaks=seq(0,30,by=5), limits=c(0,25))+
   labs(x="Year", y="Number of species")+
   theme_classic()+
   theme(legend.position = "bottom", text=element_text(size=18))
@@ -566,9 +629,7 @@ summary(all_spp_m) # date is significant
 
 # Check model fit
 simulationOutput <- simulateResiduals(fittedModel = all_spp_m)
-plot(simulationOutput) # quantile deviations
-res = recalculateResiduals(simulationOutput, group = cdata$date_num) # recalculate residuals to aggregate residuals per time step
-testTemporalAutocorrelation(res, time = unique(cdata$date_num)) # non-sig
+plot(simulationOutput) 
 testDispersion(simulationOutput)
 # no assumptions violated
 
@@ -653,9 +714,6 @@ summary(adv_spp_m) # date is significant
 # Check model fit
 simulationOutput <- simulateResiduals(fittedModel = adv_spp_m)
 plot(simulationOutput) 
-plotResiduals(simulationOutput, cdata$date_num, quantreg = T) 
-res = recalculateResiduals(simulationOutput, group = cdata$date_num) # recalculate residuals to aggregate residuals per time step
-testTemporalAutocorrelation(res, time = unique(cdata$date_num)) # non-sig
 testDispersion(simulationOutput)
 # no assumptions violated
 
@@ -673,6 +731,30 @@ BIC(adv_spp_m)
 BIC(adv_spp_seg) 
 # within 2 points so take simplest model (non-segmented)
 
+#### NEED TO PLOT SEGMENTED MODEL HERE #####
+newdataesw <- expand.grid(date_num = c(1,2,3,4,5,6,7,8,9,10,11), nspp = 0)
+dat <- predict(adv_spp_seg, newdata = newdataesw, type="response", se.fit=TRUE)
+dat <- as.data.frame(dat)
+dat$mid_date <- newdataesw$date_num
+#dat$mid_date <- c(1905,1925,1935,1945,1955,1965,1975,1985,1995,2005,2015)
+dat$signif <- ifelse(dat$mid_date<9, "no", "yes")
+setDT(dat)
+dat[, rate_lower := fit - 1.96*se.fit]
+dat[, rate_upper := fit + 1.96*se.fit]
+
+adv_spp_seg_p <- ggplot(dat, aes(x=mid_date, y=fit))+
+  geom_line(aes(linetype=signif),show.legend=FALSE)+
+  geom_ribbon(aes(ymin=rate_lower, ymax=rate_upper, group=signif), alpha=0.1)+
+  geom_point(data=cdata, aes(x=date_num, y=adv_nspp))+
+  scale_x_continuous(breaks=seq(1905,2015,by=20))+
+  labs(x="Year", y="Number of species")+
+  scale_linetype_manual(values=c("dashed", "solid"))+
+  theme_classic()
+adv_spp_seg_p 
+
+## now non-segmented model after removing Pine-tree Lappet
+
+
 # What is the incidence rate over time?
 output <- coef(summary(adv_spp_m))
 adv_spp_r <- data.frame(Startdate = 1905, Enddate=2005, # start date of model
@@ -688,7 +770,6 @@ adv_spp_r[, rate_lower := rate - 1.96*rate_SE]
 adv_spp_r[, rate_upper := rate + 1.96*rate_SE]
 adv_spp_r
 
-#
 
 ### 2d. Immigrant + native host plants
 # Poisson GLM
@@ -782,6 +863,8 @@ summary(adv_nat_spp_m)
 # Check model fit
 simulationOutput <- simulateResiduals(fittedModel = adv_nat_spp_m)
 plot(simulationOutput)
+res = recalculateResiduals(simulationOutput, group = cdata$date_num) # recalculate residuals to aggregate residuals per time step
+testTemporalAutocorrelation(res, time = unique(cdata$date_num)) # non-sig
 testDispersion(simulationOutput)
 # no assumptions violated
 
@@ -799,22 +882,106 @@ BIC(adv_nat_spp_m)
 BIC(adv_nat_spp_seg)
 # within 2 points so take simplest model (non-segmented)
 
-# What is the incidence rate over time?
-output <- coef(summary(adv_nat_spp_m))
-adv_nat_spp_r <- data.frame(Startdate = 1905, Enddate=2005, # start date of model
-                            rate = exp(output["date_num","Estimate"]), # exponential of the adventive slope
-                            rate_SE = 
-                              deltamethod(~exp(x1), 
-                                          output["date_num","Estimate"], 
-                                          output["date_num","Std. Error"]^2, ses=TRUE)) # standard error around exponential of immigrant slope
+#### NEED TO PLOT SEGMENTED MODEL HERE #####
+newdataesw <- expand.grid(date_num = c(1,2,3,4,5,6,7,8,9,10,11), nspp = 0)
+dat2 <- predict(adv_nat_spp_seg, newdata = newdataesw, type="response", se.fit=TRUE)
+dat2 <- as.data.frame(dat2)
+dat2$mid_date <- c(1905,1915,1925,1935,1945,1955,1965,1975,1985,1995,2005)
+dat2$signif <- ifelse(dat2$mid_date<1985, "no", "yes")
+setDT(dat2)
+dat2[, rate_lower := fit - 1.96*se.fit]
+dat2[, rate_upper := fit + 1.96*se.fit]
 
-# Produce confidence intervals for the rate estimates
-setDT(adv_nat_spp_r)
-adv_nat_spp_r[, rate_lower := rate - 1.96*rate_SE]
-adv_nat_spp_r[, rate_upper := rate + 1.96*rate_SE]
-adv_nat_spp_r
+adv_spp_seg_p <- ggplot(dat2, aes(x=mid_date, y=fit))+
+  geom_line(aes(linetype=signif),lwd=2,show.legend=FALSE, colour="#D95F02")+
+  geom_ribbon(aes(ymin=rate_lower, ymax=rate_upper, group=signif), fill="#D95F02", alpha=0.1)+
+  geom_point(data=cdata, aes(x=mid_date, y=adv_nspp), size=3, colour="#D95F02", shape=17)+
+  scale_x_continuous(breaks=seq(1905,2005,by=20))+
+  labs(x="Year", y="Number of species")+
+  scale_linetype_manual(values=c("dashed", "solid"))+
+  theme_classic()+
+  theme(legend.position = "bottom", text=element_text(size=20))
+adv_spp_seg_p 
+ggsave(adv_spp_seg_p, file="Graphs/FigureS1.png", width=7, height=7)
 
 #
+
+newdataesw <- expand.grid(date_num = c(1,2,3,4,5,6,7,8,9,10,11,12), nspp = 0)
+dat <- predict(imm_spp_seg, newdata = newdataesw, type="response", se.fit=TRUE)
+dat <- as.data.frame(dat)
+dat$mid_date <- c(1905,1915,1925,1935,1945,1955,1965,1975,1985,1995,2005,2015)
+dat$signif <- ifelse(dat$mid_date<1935, "no", "yes")
+setDT(dat)
+dat[, rate_lower := fit - 1.96*se.fit]
+dat[, rate_upper := fit + 1.96*se.fit]
+
+imm_spp_seg_p <- ggplot(dat, aes(x=mid_date, y=fit))+
+  geom_line(aes(linetype=signif),show.legend=FALSE)+
+  geom_ribbon(aes(ymin=rate_lower, ymax=rate_upper, group=signif), alpha=0.1)+
+  geom_point(data=cdata, aes(x=mid_date, y=imm_nspp))+
+  scale_x_continuous(breaks=seq(1905,2015,by=20))+
+  labs(x="Year", y="Number of species")+
+  scale_linetype_manual(values=c("dashed", "solid"))+
+  theme_classic()
+imm_spp_seg_p 
+
+
+
+##### plot adventive and adventive native graphs for supplementary material ##### 
+
+pred1 <- dat
+pred2 <- dat2
+
+pred1$group <- "adventive"
+pred1$significance <- pred1$signif
+pred1$x <- c(1:nrow(pred1))
+pred1$residual.scale <- NULL
+pred1$signif <- NULL
+colnames(pred1)[1:5] <- c("predicted", "std.error", "mid_date", "conf.low", "conf.high")
+pred1 <- pred1[,c(8,1:7)]
+pred1$mid_date <- c(1905, 1915, 1925, 1935, 1945, 1955, 1965, 1975, 1985, 1995, 2005)
+
+pred2$group <- "adventive_native"
+pred2$significance <- pred2$signif
+pred2$x <- c(1:nrow(pred2))
+pred2$residual.scale <- NULL
+pred2$signif <- NULL
+colnames(pred2)[1:5] <- c("predicted", "std.error", "mid_date", "conf.low", "conf.high")
+pred2 <- pred2[,c(8,1:7)]
+pred2$mid_date <- c(1905, 1915, 1925, 1935, 1945, 1955, 1965, 1975, 1985, 1995, 2005)
+
+points <- cdata[,c(1,4,7)]
+library(data.table)
+points2 <- melt(setDT(points), id.vars = "mid_date", variable.name = "group")
+points2$group <- as.character(points2$group)
+points2$group[points2$group == "adv_nspp"] <- "adventive"
+points2$group[points2$group == "adv_nat_nspp"] <- "adventive_native"
+
+pred_final <- rbind(pred1, pred2)
+legend_title <- ""
+pred_final$significance <- factor(pred_final$significance, levels=c("yes", "no"))
+plot_final <- ggplot()+
+  geom_line(data=pred_final, aes(x=mid_date, y=predicted, colour=group, linetype=significance), lwd=2)+
+  geom_ribbon(data=pred_final, aes(x=mid_date, y=predicted, ymin=conf.low, ymax=conf.high, fill=group, fill=significance), alpha=0.2)+
+  geom_point(data=points2, aes(x=mid_date, y=value, colour=group, shape=group), size=3, alpha=0.4)+
+  scale_fill_manual(legend_title,labels=c("Adventives","Adventives on \nnative host plants"),
+                    values = c("#1B9E77", "#D95F02"))+
+  scale_colour_manual(legend_title,labels=c("Adventives","Adventives on \nnative host plants"),
+                      values = c("#1B9E77", "#D95F02"))+
+  scale_shape_manual(legend_title,labels=c("Adventives","Adventives on \nnative host plants"),
+                     values = c(19,15))+
+  guides(linetype = "none", fill = guide_legend(byrow = TRUE))+
+  scale_x_continuous(breaks=seq(1905,2005,by=20))+
+  #scale_y_continuous(breaks=seq(0,20,by=5), limits=c(0,20))+
+  labs(x="Year", y="Number of species")+
+  theme_classic()+
+  theme(legend.position = "bottom", text=element_text(size=24))
+plot_final
+ggsave(plot_final, file="Graphs/FigureS1.png", width=7, height=7)
+
+
+
+
 
 ### 2g. Adventive + non-native host plants
 # Poisson GLM
